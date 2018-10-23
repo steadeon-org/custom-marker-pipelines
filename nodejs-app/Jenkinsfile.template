@@ -22,13 +22,22 @@ def testPodYaml = libraryResource 'podtemplates/nodejs-app/web-test-pod.yml'pipe
       steps {
         checkout scm
         container('nodejs') {
-          echo 'Hello World!'   
-          sh 'node --version'
+          sh '''
+            npm install express
+            npm install pug --save
+            node ./hello.js &
+          '''
+        }
+        container('testcafe') {
+          sh '/opt/testcafe/docker/testcafe-docker.sh "chromium --no-sandbox" tests/*.js -r xunit:res.xml'
         }
       }
       post {
         success {
           stash name: 'app', includes: '*.js, public/**, views/*, Dockerfile'
+        }
+        always {
+          junit 'res.xml'
         }
       }
     }
