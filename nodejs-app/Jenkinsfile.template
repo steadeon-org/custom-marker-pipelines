@@ -31,7 +31,9 @@ pipeline {
         timeout(time: 30, unit: 'SECONDS') 
       }
       input {
-        message "Should we continue?"
+        message "Should we deploy?"
+        submitter "beedemo-ops"
+        submitterParameter "APPROVER"
       }
       steps {
         echo "Continuing with deployment"
