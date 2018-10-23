@@ -27,17 +27,18 @@ pipeline {
             stage('Nodejs Setup') {
               steps {
                 checkout scm
-                script {
-                  //use the Pipeline Utility Steps plugin readProperties step to read the .nodejs-app custom marker file 
-                  def props = readProperties file: '.nodejs-app'
-                  env.npmPackages = props['npmPackages']
-                }
+            stage('Nodejs Setup') {
+              steps {
+                checkout scm
+                defineProps('.nodejs-app', [npmPackages: 'express pug'])            
                 container('nodejs') {
                   sh """
                     npm i -S ${npmPackages}
                     node ./hello.js &
                   """
                 }
+              }   
+            }
               }   
             }
             stage('Testcafe') {
