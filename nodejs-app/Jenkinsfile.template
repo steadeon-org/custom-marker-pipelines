@@ -21,12 +21,19 @@ pipeline {
       }
     }
     stage('Build and Push Image') {
+      agent any
       when {
-         beforeAgent true
-         branch 'master'
+        beforeAgent true
+        branch 'master'
       }
       steps {
-         echo "TODO - build and push image"
+        echo "TODO - build and push image"
+        unstash 'app'
+      }
+      post {
+        success {
+          slackSend "${JOB_NAME} pipeline job is awaiting approval at: ${RUN_DISPLAY_URL}"
+        }
       }
     }
     stage('Deploy') {
